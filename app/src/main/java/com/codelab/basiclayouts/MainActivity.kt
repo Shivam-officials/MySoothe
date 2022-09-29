@@ -23,16 +23,19 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.paddingFromBaseline
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
@@ -43,7 +46,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.ContentScale.Companion.Crop
+import androidx.compose.ui.layout.ContentScale.Companion.Fit
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -122,9 +128,34 @@ fun AlignYourBodyElement(
 // Step: Favorite collection card - Material Surface
 @Composable
 fun FavoriteCollectionCard(
+    @DrawableRes drawable : Int,
+    @StringRes caption: Int,
     modifier: Modifier = Modifier,
 ) {
     // Implement composable here
+ Surface(
+     shape = MaterialTheme.shapes.small,
+     modifier = modifier
+ ) {
+     Row(
+         verticalAlignment = Alignment.CenterVertically,
+         modifier = Modifier.width(192.dp)
+     ) {
+         Image(
+             painter = painterResource(drawable),
+             contentDescription = null,
+             contentScale = Crop,
+             modifier = Modifier.size(56.dp)
+         )
+
+         Text(
+             text = stringResource(id = caption),
+             style = MaterialTheme.typography.h3,
+             modifier = Modifier.padding(horizontal = 16.dp)
+         )
+
+     }
+ }
 }
 
 // Step: Align your body row - Arrangements
@@ -192,7 +223,7 @@ private data class DrawableStringPair(
     @StringRes val text: Int,
 )
 
-@Preview(showBackground = true, backgroundColor = 0xFFF0EAE2)
+//@Preview(showBackground = true, backgroundColor = 0xFFF0EAE2)
 @Composable
 fun SearchBarPreview() {
     MySootheTheme { SearchBar(Modifier.padding(8.dp)) }
@@ -210,11 +241,13 @@ fun AlignYourBodyElementPreview() {
     }
 }
 
-//@Preview(showBackground = true, backgroundColor = 0xFFF0EAE2)
+@Preview(showBackground = true, backgroundColor = 0xFFF0EAE2)
 @Composable
 fun FavoriteCollectionCardPreview() {
     MySootheTheme {
         FavoriteCollectionCard(
+            drawable = R.drawable.fc2_nature_meditations,
+            caption = R.string.fc2_nature_meditations,
             modifier = Modifier.padding(8.dp)
         )
     }
