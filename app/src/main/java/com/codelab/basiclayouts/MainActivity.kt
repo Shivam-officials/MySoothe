@@ -27,12 +27,16 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.paddingFromBaseline
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -48,13 +52,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.ContentScale.Companion.Crop
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.codelab.basiclayouts.ui.theme.MySootheTheme
+import java.util.Locale
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -107,7 +111,7 @@ fun AlignYourBodyElement(
         Image(
             painter = painterResource(drawable),
             contentDescription = null,
-            contentScale = ContentScale.Crop,
+            contentScale = Crop,
             modifier = Modifier
                 .size(88.dp)
                 .clip(shape = CircleShape)
@@ -126,34 +130,34 @@ fun AlignYourBodyElement(
 // Step: Favorite collection card - Material Surface
 @Composable
 fun FavoriteCollectionCard(
-    @DrawableRes drawable : Int,
+    @DrawableRes drawable: Int,
     @StringRes caption: Int,
     modifier: Modifier = Modifier,
 ) {
     // Implement composable here
- Surface(
-     shape = MaterialTheme.shapes.small,
-     modifier = modifier
- ) {
-     Row(
-         verticalAlignment = Alignment.CenterVertically,
-         modifier = Modifier.width(192.dp)
-     ) {
-         Image(
-             painter = painterResource(drawable),
-             contentDescription = null,
-             contentScale = Crop,
-             modifier = Modifier.size(56.dp)
-         )
+    Surface(
+        shape = MaterialTheme.shapes.small,
+        modifier = modifier
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.width(192.dp)
+        ) {
+            Image(
+                painter = painterResource(drawable),
+                contentDescription = null,
+                contentScale = Crop,
+                modifier = Modifier.size(56.dp)
+            )
 
-         Text(
-             text = stringResource(id = caption),
-             style = MaterialTheme.typography.h3,
-             modifier = Modifier.padding(horizontal = 16.dp)
-         )
+            Text(
+                text = stringResource(id = caption),
+                style = MaterialTheme.typography.h3,
+                modifier = Modifier.padding(horizontal = 16.dp)
+            )
 
-     }
- }
+        }
+    }
 }
 
 // Step: Align your body row - Arrangements
@@ -165,9 +169,9 @@ fun AlignYourBodyRow(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         contentPadding = PaddingValues(horizontal = 16.dp),
         modifier = Modifier
-    ){
-        items(alignYourBodyData){ item ->
-            AlignYourBodyElement(drawable = item.drawable, text =item.text )
+    ) {
+        items(alignYourBodyData) { item ->
+            AlignYourBodyElement(drawable = item.drawable, text = item.text)
         }
     }
 }
@@ -178,14 +182,39 @@ fun FavoriteCollectionsGrid(
     modifier: Modifier = Modifier,
 ) {
     // Implement composable here
+    LazyHorizontalGrid(
+        rows = GridCells.Fixed(2),
+        contentPadding = PaddingValues(horizontal = 16.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = modifier.height(120.dp)
+    ) {
+        items(favoriteCollectionsData) { item ->
+            FavoriteCollectionCard(
+                drawable = item.drawable,
+                caption = item.text,
+//                modifier = Modifier.height(56.dp)
+            )
+        }
+    }
 }
 
 // Step: Home section - Slot APIs
 @Composable
 fun HomeSection(
+    @StringRes title: Int,
     modifier: Modifier = Modifier,
+    content: @Composable () -> Unit,
 ) {
-    // Implement composable here
+    Column(modifier = modifier) {
+        Text(text = stringResource(id = title).uppercase(Locale.getDefault()),
+        style = MaterialTheme.typography.h2,
+        modifier = Modifier
+            .paddingFromBaseline(top = 40.dp, bottom = 8.dp)
+            .padding(horizontal = 16.dp)
+        )
+        content()
+    }
 }
 
 // Step: Home screen - Scrolling
@@ -265,16 +294,20 @@ fun FavoriteCollectionsGridPreview() {
     MySootheTheme { FavoriteCollectionsGrid() }
 }
 
-@Preview(showBackground = true, backgroundColor = 0xFFF0EAE2)
+//@Preview(showBackground = true, backgroundColor = 0xFFF0EAE2 )
 @Composable
 fun AlignYourBodyRowPreview() {
     MySootheTheme { AlignYourBodyRow() }
 }
 
-//@Preview(showBackground = true, backgroundColor = 0xFFF0EAE2)
+@Preview(showBackground = true, backgroundColor = 0xFFF0EAE2)
 @Composable
 fun HomeSectionPreview() {
-    MySootheTheme { HomeSection() }
+    MySootheTheme {
+        HomeSection(R.string.align_your_body) {
+            AlignYourBodyRow()
+        }
+    }
 }
 
 //@Preview(showBackground = true, backgroundColor = 0xFFF0EAE2)
